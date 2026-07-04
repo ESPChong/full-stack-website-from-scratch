@@ -1,4 +1,19 @@
 services:
+
+  frontend:
+    image: frontend:latest
+    container_name: local-frontend
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+  
+  backend:
+    image: backend:latest
+    container_name: local-backend
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+
   mongodb:
     image: mongo:latest
     container_name: local-mongo
