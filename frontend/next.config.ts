@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*', // Your Express server port
+        destination: 'http://localhost:5001/api/:path*', // Your Express server port
       },
     ];
   },
