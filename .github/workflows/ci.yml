@@ -28,19 +28,11 @@ jobs:
           cache: 'npm' # Automatically caches node_modules for speed
           cache-dependency-path: |
             package-lock.json
-            frontend/package-lock.json
-            backend/package-lock.json
 
       # Install dependencies across the monorepo
       - name: Install Root Dependencies
         run: npm ci
 
-      - name: Install Frontend Dependencies
-        run: npm --prefix frontend ci
-
-      - name: Install Backend Dependencies
-        run: npm --prefix backend ci
-        
       - name: Lint Frontend
         run: npm --prefix frontend run lint
 
