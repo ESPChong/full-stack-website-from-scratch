@@ -36,10 +36,10 @@ jobs:
         run: npm ci
 
       - name: Install Frontend Dependencies
-        run: npm --prefix frontend cli
+        run: npm --prefix frontend ci
 
       - name: Install Backend Dependencies
-        run: npm --prefix backend cli
+        run: npm --prefix backend ci
         
       - name: Lint Frontend
         run: npm --prefix frontend run lint
