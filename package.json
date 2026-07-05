@@ -12,5 +12,13 @@
   "devDependencies": {
     "concurrently": "^9.1.0"
   },
-  "workspaces": ["frontend", "backend"]
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "allowScripts": {
+    "fsevents@2.3.3": true,
+    "sharp@0.34.5": true,
+    "unrs-resolver@1.12.2": true
+  }
 }
