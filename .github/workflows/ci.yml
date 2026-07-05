@@ -1,0 +1,88 @@
+name: Continuous Integration
+
+# 1. Trigger the workflow on pushes or pull requests to main
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  # Job 1: Run Unit & Integration Tests (Jest)
+  test:
+    name: Run Jest Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm' # Automatically caches node_modules for speed
+          cache-dependency-path: |
+            package-lock.json
+            frontend/package-lock.json
+            backend/package-lock.json
+
+      # Install dependencies across the monorepo
+      - name: Install Root Dependencies
+        run: npm ci
+
+      - name: Install Frontend Dependencies
+        run: npm --prefix frontend cli
+
+      - name: Install Backend Dependencies
+        run: npm --prefix backend cli
+        
+      - name: Lint Frontend
+        run: npm --prefix frontend run lint
+
+      - name: Build Frontend
+        run: npm --prefix frontend run build
+
+      - name: Run Frontend Tests
+        run: npm --prefix frontend test -- --ci
+
+      - name: Run Backend Tests
+        run: npm --prefix backend test -- --ci
+
+  # Job 2: Verify Docker Builds
+  # Ensures you never merge code that breaks your containerization
+  docker-build-check:
+    name: Test Docker Builds
+    needs: test # Only runs if the 'test' job passes
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Frontend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: false # Only build to verify it works; we don't push during CI
+          tags: nextjs-frontend:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Backend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: false
+          tags: express-backend:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
