@@ -1,0 +1,15 @@
+{
+  "name": "full-stack-website",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "concurrently --names \"FE,BE\" --prefix-colors \"cyan,magenta\" \"npm:test:frontend\" \"npm:test:backend\"",
+    "test:frontend": "npm --prefix frontend test",
+    "test:backend": "npm --prefix backend test",
+    "test:frontend:watch": "npm --prefix frontend test -- --watch",
+    "test:backend:watch": "npm --prefix backend test -- --watch"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

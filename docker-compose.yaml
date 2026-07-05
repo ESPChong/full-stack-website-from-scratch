@@ -1,18 +1,28 @@
 services:
 
   frontend:
-    image: frontend:latest
+    build: 
+      context: ./frontend  # Points to the frontend folder containing its Dockerfile
     container_name: local-frontend
     ports:
       - "3000:3000"
     restart: unless-stopped
+    depends_on:
+      - backend
   
   backend:
-    image: backend:latest
+    build: 
+      context: ./backend   # Points to the backend folder containing its Dockerfile
     container_name: local-backend
     ports:
       - "5001:5001"
     restart: unless-stopped
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/your_db_name
+      - REDIS_URL=redis://redis:6379
 
   mongodb:
     image: mongo:latest
@@ -31,4 +41,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  mongo-data: # This ensures your database data isn't lost if the container stops
+  mongo-data:
