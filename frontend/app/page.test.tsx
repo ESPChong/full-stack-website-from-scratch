@@ -1,14 +1,30 @@
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom'; // Gives us matchers like toBeInTheDocument
+import { render, screen, waitFor } from '@testing-library/react';
 import Home from './page';
 
+// Mock fetch before any tests run
+beforeEach(() => {
+  global.fetch = jest.fn(() =>
+    Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve({ message: 'Backend is successfully connected!' }),
+    })
+  ) as jest.Mock;
+});
+
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
 describe('Home Page', () => {
-  it('renders the welcome heading', () => {
-    render(<Home />); // Simulates rendering the component
-    
-    // Find the element by its text content
-    const heading = screen.getByRole('heading', { name: /welcome to the dashboard/i });
-    
+  it('renders the connection test heading', async () => {
+    render(<Home />);
+    const heading = screen.getByRole('heading', {
+      name: /MERN Stack Connection Test/i 
+    });
     expect(heading).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText(/Backend is successfully connected!/i)).toBeInTheDocument();
+    });
   });
 });
