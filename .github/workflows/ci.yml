@@ -3,17 +3,72 @@ name: Continuous Integration
 # 1. Trigger the workflow on pushes or pull requests to main
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "LICENSE"
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  # Job 1: Run Unit & Integration Tests (Jest)
+  # Job 1 : Security Audit
+  audit:
+    name: Security Audit  
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Run Security Audit
+      - name: Run npm audit
+        run: npm audit --audit-level=high 
+
+  # Job 2: Type Check
+  type-check:
+    name: Check TypeScript Typing
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Run TypeScript type check
+        run: npm --prefix frontend run type-check
+
+  # Job 3: Run Lint, Build and Unit & Integration Tests (Jest)
   test:
-    name: Lint and Build Frontend, Run Jest Tests
+    name: Lint, Build and Test
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -42,20 +97,28 @@ jobs:
       - name: Run Frontend Tests
         run: npm --prefix frontend test -- --ci
 
+      - name: Lint Backend
+        run: npm --prefix backend run lint
       - name: Run Backend Tests
-        run: npm --prefix backend test -- --ci
+        run: npm --prefix backend test -- --ci --coverage
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend/coverage/
 
-  # Job 2: Verify Docker Builds
+  # Job 4: Verify Docker Builds
   # Ensures you never merge code that breaks your containerization
   docker-build-check:
     name: Test Docker Builds
-    needs: test # Only runs if the 'test' job passes
+    needs: [audit, type-check, test] # Only runs if everything passes
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
