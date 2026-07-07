@@ -110,9 +110,6 @@ docker-compose.override.yml
 # Provider/plugin cache (local to each machine)
 **/.terraform/
 
-# NOTE: .terraform.lock.hcl SHOULD be committed (like package-lock.json)
-# Do NOT ignore it.
-
 # Crash logs
 crash.log
 crash.*.log
