@@ -8,7 +8,7 @@ app.set('trust proxy', 1);
 // Create a simple status route
 app.get('/api/status', (req, res) => {
   res.json({ 
-    message: "Backend is successfully connected!" 
+    message: 'Backend is successfully connected!'
   });
 });
 
