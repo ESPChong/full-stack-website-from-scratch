@@ -8,10 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "test": "jest",
-    "type-check": "tsc --noEmit"    
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "next": "16.2.10",
+    "next": "^9.3.3",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
@@ -29,9 +29,5 @@
     "tailwindcss": "^4",
     "ts-jest": "^29.4.11",
     "typescript": "^5"
-  },
-  "allowScripts": {
-    "sharp@0.34.5": true,
-    "unrs-resolver@1.12.2": true
   }
 }
