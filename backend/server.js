@@ -1,9 +1,6 @@
 const app = require('./app');
-const cors = require('cors');
 const connectMongoDB = require('./config/db');
 const { connectRedis } = require('./config/redis');
-
-app.use(cors());
 
 // Initialize Database and Redis Connections
 connectMongoDB();

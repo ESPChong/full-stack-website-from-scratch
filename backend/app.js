@@ -1,9 +1,34 @@
 require('dotenv').config();
 
 const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
 const app = express();
 
-app.set('trust proxy', 1);
+app.set('trust proxy', 1);  // Allow nginx as reverse proxy
+app.use(helmet);  // Security Middleware (Helmet)
+app.use(express.json());
+
+// CORS Middleware
+const allowedOrigins = process.env.CORS_ORIGIN;
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // Allow requests with no origin
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true); // Origin is in the allow-list
+    } else {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false); // Origin is blocked
+    }
+  },
+  credentials: true 
+};
+
+app.use(cors(corsOptions));
+
+// -------------------- ROUTES --------------------
 
 // Create a simple status route
 app.get('/api/ready', (req, res) => {
@@ -36,11 +61,15 @@ app.use((err, req, res, next) => {
 
   const statusCode = err.statusCode || 500;
 
-  res.status(statusCode).json({
-    success: false,
-    message: err.message || 'Internal Server Error',
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
-  });
+  try {
+    res.status(statusCode).json({
+      success: false,
+      message: err.message || 'Internal Server Error',
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+  } catch (sendError) {
+    next(sendError);
+  }
 });
 
 module.exports = app;
