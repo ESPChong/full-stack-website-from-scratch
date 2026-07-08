@@ -12,4 +12,12 @@ app.get('/api/status', (req, res) => {
   });
 });
 
+// Health Check
+app.get('/api/health', (req,res) => {
+  res.status(200).json({
+    status: 'healthy',
+    timestamp: new Date().toISOString()
+  });
+});
+
 module.exports = app;
