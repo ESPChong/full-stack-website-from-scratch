@@ -3,11 +3,27 @@ require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
-const app = express();
+const pinoHttp = require('pino-http');
+const pino = require('pino');
 
+const app = express();
 app.set('trust proxy', 1);  // Allow nginx as reverse proxy
-app.use(helmet);  // Security Middleware (Helmet)
+
+app.use(helmet());  // Security Middleware (Helmet)
 app.use(express.json());
+
+
+// PINO Logger Config
+const logger = pino({
+  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  // For readability in terminal
+  transport: process.env.NODE_ENV !== 'production' 
+    ? { target: 'pino-pretty', options: { colorize: true } } 
+    : undefined
+});
+
+app.use(pinoHttp({ logger }));  // For use in routes
+
 
 // CORS Middleware
 const allowedOrigins = process.env.CORS_ORIGIN;
@@ -28,10 +44,12 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+
 // -------------------- ROUTES --------------------
 
 // Create a simple status route
 app.get('/api/ready', (req, res) => {
+  req.log.info('Status Endpoint was hit');
   res.json({ 
     message: 'Backend is successfully connected!',
     hostname: process.env.HOSTNAME
@@ -40,6 +58,7 @@ app.get('/api/ready', (req, res) => {
 
 // Health Check
 app.get('/api/health', (req, res) => {
+  req.log.info('Healthcheck endpoint was hit');
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString()
@@ -48,6 +67,7 @@ app.get('/api/health', (req, res) => {
 
 // 404 Catch All
 app.all('*path', (req, res) => {
+  req.log.info('404 Error endpoint was hit');
   res.status(404).json({
     success: false,
     message: `Cannot find ${req.method} ${req.originalUrl} on this server`
