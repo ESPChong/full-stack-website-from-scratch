@@ -7,7 +7,7 @@ export default function Home() {
 
   useEffect(() => {
     // Fetch data from Express backend
-    fetch('/api/status')
+    fetch('/api/ready')
       .then((res) => {
         if (!res.ok) throw new Error("Network response was not ok");
         return res.json();

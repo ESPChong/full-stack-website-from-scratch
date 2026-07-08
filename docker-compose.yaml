@@ -83,6 +83,8 @@ services:
       retries: 3
       start_period: 10s
 
+    stop_grace_period: 60s
+
     environment:
       - MONGO_URI=mongodb://mongodb:27017/my_db
       - REDIS_URL=redis://redis:6379
