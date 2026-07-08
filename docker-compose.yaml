@@ -1,5 +1,6 @@
 services:
 
+# -------------------- Nginx --------------------
   nginx:
     image: nginx:alpine
     
@@ -17,6 +18,10 @@ services:
       backend:
         condition: service_healthy
 
+    networks:
+      - frontend_network
+      - backend_network
+
     restart: unless-stopped
 
     healthcheck:
@@ -26,15 +31,16 @@ services:
       retries: 3
       start_period: 10s
     
+  # -------------------- Frontend --------------------
   frontend:
     build: 
       context: ./frontend  # Points to the frontend folder containing its Dockerfile
     
     container_name: local-frontend
     
-    expose:
-      - "3000"
-    
+    networks:
+      - frontend_network
+
     restart: unless-stopped
     
     depends_on:
@@ -47,14 +53,20 @@ services:
       timeout: 5s
       retries: 3
       start_period: 15s
+
+# -------------------- Backend --------------------
   backend:
     build: 
       context: ./backend   # Points to the backend folder containing its Dockerfile
 
-    container_name: local-backend
-    
-    expose:
-      - "5001"
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: '0.5'
+
+    networks:
+      - backend_network
 
     restart: unless-stopped
 
@@ -76,6 +88,7 @@ services:
       - REDIS_URL=redis://redis:6379
       - PORT=5001
 
+# -------------------- MongoDB --------------------
   mongodb:
     image: mongo:8.2
 
@@ -85,7 +98,10 @@ services:
       - "27017:27017"
 
     volumes:
-      - mongo-data:/data/db
+      - mongo_data:/data/db
+
+    networks:
+      - backend_network
 
     restart: unless-stopped
 
@@ -96,6 +112,7 @@ services:
       retries: 3
       start_period: 10s
 
+# -------------------- Redis --------------------
   redis:
     image: redis:alpine
 
@@ -109,6 +126,9 @@ services:
     
     command: redis-server --appendonly yes --save 60 1
 
+    networks:
+      -  backend_network
+
     restart: unless-stopped
 
     healthcheck:
@@ -120,6 +140,12 @@ services:
 
 volumes:
   redis_data:
-  mongo-data:
+  mongo_data:
 
 networks:
+  frontend_network:
+    driver: bridge
+    
+  backend_network:
+    driver: bridge
+    internal: true
