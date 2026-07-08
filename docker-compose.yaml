@@ -145,7 +145,7 @@ volumes:
 networks:
   frontend_network:
     driver: bridge
-    
+
   backend_network:
     driver: bridge
     internal: true
