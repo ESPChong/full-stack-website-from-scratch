@@ -26,13 +26,13 @@ app.use(pinoHttp({ logger }));  // For use in routes
 
 
 // CORS Middleware
-const allowedOrigins = process.env.CORS_ORIGIN;
+const allowedOrigins = process.env.CORS_ORIGIN || '';
 
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true); // Allow requests with no origin
 
-    if (allowedOrigins.includes(origin)) {
+    if (allowedOrigins.split(',').includes(origin)) {
       return callback(null, true); // Origin is in the allow-list
     } else {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';

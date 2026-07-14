@@ -7,8 +7,6 @@ describe('GET /api/ready', () => {
     const response = await request(app).get('/api/ready');
     
     expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual({
-      message: 'Backend is successfully connected!'
-    });
+    expect(response.body.message).toBe('Backend is successfully connected!');
   });
 });

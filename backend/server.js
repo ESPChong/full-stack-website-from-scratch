@@ -2,15 +2,24 @@ const app = require('./app');
 const connectMongoDB = require('./config/db');
 const { connectRedis } = require('./config/redis');
 
+
+// Initialize Database and Redis Connections
+(async () => {
+  try {
+    await connectMongoDB();
+    console.log('Connected to MongoDB!');
+    
+    await connectRedis();
+    console.log('Connected to Redis!');
+  } catch (error) {
+    console.error('Connection failed:', error.message);
+  }
+})();
+
 // Start the server
 const port = process.env.PORT || 5001;
-
 const server = app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-    
-  // Initialize Database and Redis Connections
-  connectMongoDB();
-  connectRedis();
+  console.log(`Server running on port ${port}`);  
 });
 
 

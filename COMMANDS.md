@@ -1,6 +1,9 @@
 ### Install new dependencies + Avoid rebuilding docker
 docker compose exec <frontend/backend> npm install <packages> -D --prefix <frontend/backend>
 
+### Rebuild Docker Container
+docker compose build --no-cache <service>
+
 ### Clean Wipe and Reinstall
 `docker compose down` 
 Make sure containers are down
