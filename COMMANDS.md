@@ -1,5 +1,5 @@
 ### Install new dependencies + Avoid rebuilding docker
-docker compose exec frontend npm install <packages> -D --prefix <frontend/backend>
+docker compose exec <frontend/backend> npm install <packages> -D --prefix <frontend/backend>
 
 ### Clean Wipe and Reinstall
 `docker compose down` 
@@ -11,5 +11,8 @@ Remove all previously installed modules and package-lock
 `npm install --prefix frontend` AND `npm install --prefix backend`
 Reinstall node modules for frontend and backend
 
+`npm install`
+Reinstall node modules for root
+
 `docker compose up -d --build`
-Rebuild docker and 
+Rebuild docker and run start up containers
