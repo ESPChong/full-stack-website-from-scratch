@@ -89,7 +89,7 @@ jobs:
         run: npm ci
 
       - name: Install Frontend Dependencies
-        run: npm ci --prefix frotend
+        run: npm ci --prefix frontend
 
       - name: Lint Frontend
         run: npm --prefix frontend run lint
