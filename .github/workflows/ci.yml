@@ -92,7 +92,7 @@ jobs:
         run: npm --prefix frontend run lint
 
       - name: Build Frontend
-        run: npm --prefix frontend build
+        run: npm --prefix frontend run build
 
       - name: Run Frontend Tests
         run: npm --prefix frontend test -- --ci
