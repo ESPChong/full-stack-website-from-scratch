@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "concurrently --names \"FE,BE\" --prefix-colors \"cyan,magenta\" \"npm:test:frontend\" \"npm:test:backend\"",
-    "test:frontend": "npm --prefix frontend test",
-    "test:backend": "npm --prefix backend test",
-    "test:frontend:watch": "npm --prefix frontend test -- --watch",
-    "test:backend:watch": "npm --prefix backend test -- --watch"
+    "test": "concurrently --names \"FE,BE\" --prefix-colors \"cyan,magenta\" \"npm test -w frontend\" \"npm test -w backend\"",
+    "test:frontend": "npm test -w frontend",
+    "test:backend": "npm test -w backend",
+    "test:frontend:watch": "npm test -w frontend -- --watch",
+    "test:backend:watch": "npm test -w backend -- --watch"
   },
   "devDependencies": {
     "concurrently": "10.0.3"
@@ -15,10 +15,5 @@
   "workspaces": [
     "frontend",
     "backend"
-  ],
-  "allowScripts": {
-    "fsevents@2.3.3": true,
-    "es5-ext@0.10.64": true,
-    "fsevents@1.2.13": true
-  }
+  ]
 }

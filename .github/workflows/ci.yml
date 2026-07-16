@@ -85,11 +85,8 @@ jobs:
             package-lock.json
 
       # Install dependencies across the monorepo
-      - name: Install Root Dependencies
+      - name: Install Dependencies
         run: npm ci
-
-      - name: Install Frontend Dependencies
-        run: npm ci --prefix frontend
 
       - name: Lint Frontend
         run: npm --prefix frontend run lint
@@ -129,7 +126,8 @@ jobs:
       - name: Build Frontend Image
         uses: docker/build-push-action@v6
         with:
-          context: ./frontend
+          context: .
+          file: frontend/Dockerfile
           push: false # Only build to verify it works; we don't push during CI
           tags: nextjs-frontend:test
           cache-from: type=gha
@@ -138,7 +136,8 @@ jobs:
       - name: Build Backend Image
         uses: docker/build-push-action@v6
         with:
-          context: ./backend
+          context: .
+          file: backend/Dockerfile
           push: false
           tags: express-backend:test
           cache-from: type=gha

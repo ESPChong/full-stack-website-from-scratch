@@ -1,0 +1,36 @@
+# Node
+node_modules
+**/node_modules
+
+# Build Artifacts
+frontend/.next
+frontend/out
+backend/build
+backend/dist
+coverage
+**/coverage
+
+# Env
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Docker
+Dockerfile
+**/Dockerfile
+.dockerignore
+**/.dockerignore
+
+# Git / VScode / OS
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+
+# Docs & infra
+*.md
+**/*.md
+terraform
+.github

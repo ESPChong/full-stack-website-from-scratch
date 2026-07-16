@@ -3,7 +3,9 @@ FROM node:20-alpine AS deps
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+COPY backend/package.json ./backend/
+
+RUN npm ci --workspace=backend --omit=dev
 
 #  Build Stage (App Compilation)
 FROM node:20-alpine AS builder
@@ -13,6 +15,7 @@ COPY . .
 
 # Production Stage
 FROM node:20-alpine AS runner
+WORKDIR /app
 
 USER node
 
@@ -23,18 +26,19 @@ ENV PORT=5001
 # Copy over required backend files (explicit)
 COPY --from=deps --chown=node:node /app/node_modules ./node_modules
 
-COPY --chown=node:node package.json ./
-COPY --chown=node:node server.js app.js ./
-COPY --chown=node:node config ./config
+COPY --chown=node:node backend/package.json ./backend/
+COPY --chown=node:node backend/server.js backend/app.js ./backend/
+COPY --chown=node:node backend/config ./backend/config
 
 # To be implemented later
-# COPY --chown=node:node models ./models
-# COPY --chown=node:node routes  ./routes
-# COPY --chown=node:node utils   ./utils
-# COPY --chown=node:node validators ./validators
+# COPY --chown=node:node backend/models ./backend/models
+# COPY --chown=node:node backend/routes  ./backend/routes
+# COPY --chown=node:node backend/utils   ./backend/utils
+# COPY --chown=node:node backend/validators ./backend/validators
+
+WORKDIR /app/backend
 
 EXPOSE 5001
-
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:${PORT}/api/health || exit 1
 
