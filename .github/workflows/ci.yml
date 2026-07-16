@@ -64,7 +64,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run TypeScript type check
-        run: npm run type-check -w frontend
+        run: npm --prefix frontend run type-check
 
   # Job 3: Run Lint, Build and Unit & Integration Tests (Jest)
   test:
