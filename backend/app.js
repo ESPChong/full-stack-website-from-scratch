@@ -36,18 +36,16 @@ app.use(pinoHttp({ logger }));  // For use in routes
 const allowedOrigins = process.env.CORS_ORIGIN || '';
 const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin) return callback(null, true); // Allow requests with no origin
-
-    if (process.env.NODE_ENV === 'development') return callback(null, true);
-
+    if (!origin) return callback(null, true);   // Allow requests with no origin 
+    if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') return callback(null, true);
     if (allowedOrigins.split(',').includes(origin)) {
-      return callback(null, true); // Origin is in the allow-list
+      return callback(null, true);  // Origin is in allow-list
     } else {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false); // Origin is blocked
+      return callback(new Error(msg), false);  // Origin is blocked
     }
   },
-  credentials: true 
+  credentials: true
 };
 
 app.use(cors(corsOptions));
