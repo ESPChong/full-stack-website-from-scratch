@@ -227,7 +227,7 @@ The Terraform code provisions the following resources when applied:
 | Database           | DocumentDB               | `modules/documentdb`  | Managed MongoDB-compatible cluster                          |
 | Cache              | ElastiCache (Redis)      | `modules/elasticache` | Managed Redis replication group                             |
 
-## Current deployment status
+## Current deployment status of Infrastructure as Code
 
 Status: Infrastructure-as-Code only — not deployed.
 
