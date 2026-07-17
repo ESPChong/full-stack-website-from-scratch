@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-07-17T07:57:55.610Z",
+  "base_url": "http://localhost:8080",
+  "short_code": "perf01",
+  "scenarios": {
+    "redis_hit_p95_ms": "4.22",
+    "redis_hit_avg_ms": "2.81",
+    "redis_hit_min_ms": "0.56",
+    "redis_hit_max_ms": "85.02",
+    "mongo_fallback_p95_ms": "3.73",
+    "mongo_fallback_avg_ms": "2.92",
+    "create_p95_ms": "4.90"
+  },
+  "thresholds_passed": {
+    "redis_hit_p95_under_30ms": true,
+    "mongo_fallback_p95_under_200ms": true,
+    "error_rate_under_1pct": false
+  }
+}
