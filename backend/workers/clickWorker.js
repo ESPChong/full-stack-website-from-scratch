@@ -17,7 +17,7 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://mongodb:27017/my_db';
 const BATCH_SIZE = 100;   // Flush every 100 clicks
 const BATCH_TIMEOUT = 5000; // Or every 5 seconds, whichever comes first
 
-let batch = [];
+const batch = [];
 let flushTimer = null;
 
 async function flushBatch() {
