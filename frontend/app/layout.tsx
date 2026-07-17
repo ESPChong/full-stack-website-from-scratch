@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "URL Shortener — Cache-First Redirect Engine",
@@ -18,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </nav>
         </header>
         <main style={{ padding: '2rem 1rem', maxWidth: '64rem', margin: '0 auto' }}>
-          {children}
+          <Providers>{children}</Providers>
         </main>
       </body>
     </html>
