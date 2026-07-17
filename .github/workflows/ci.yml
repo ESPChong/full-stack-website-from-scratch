@@ -44,8 +44,8 @@ jobs:
     container: returntocorp/semgrep
     steps:
       - uses: actions/checkout@v5
-      - name: Semgrep
-        run: semgrep ci --config=auto --error --suppress-errors=false
+      - name: Semgrep Scan
+        run: semgrep scan --config=auto --error --no-surpress-errors
 
   # -- Security: Dependency Audit --
   audit:
