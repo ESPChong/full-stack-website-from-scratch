@@ -419,28 +419,28 @@ describe('404 catch-all route', () => {
 });
 
 // --- CORS in production ---
-// describe('CORS configuration', () => {
-//   const originalEnv = process.env.NODE_ENV;
+describe('CORS configuration', () => {
+  const originalEnv = process.env.NODE_ENV;
 
-//   afterEach(() => {
-//     process.env.NODE_ENV = originalEnv;
-//   });
+  afterEach(() => {
+    process.env.NODE_ENV = originalEnv;
+  });
 
-//   it('should allow no-origin requests (server-to-server)', async () => {
-//     const res = await request(app)
-//       .get('/api/health')
-//       .set('Origin', '');
-//     expect(res.statusCode).toBe(200);
-//   });
+  it('should allow no-origin requests (server-to-server)', async () => {
+    const res = await request(app)
+      .get('/api/health')
+      .set('Origin', '');
+    expect(res.statusCode).toBe(200);
+  });
 
-//   it('should set CORS headers', async () => {
-//     const res = await request(app)
-//       .get('/api/health')
-//       .set('Origin', 'http://example.com');
-//     // In development mode, all origins are allowed
-//     expect(res.headers['access-control-allow-credentials']).toBe('true');
-//   });
-// });
+  it('should set CORS headers', async () => {
+    const res = await request(app)
+      .get('/api/health')
+      .set('Origin', 'http://example.com');
+    // In development mode, all origins are allowed
+    expect(res.headers['access-control-allow-credentials']).toBe('true');
+  });
+});
 
 // --- Redis cache utility error paths ---
 describe('Redis cache error handling', () => {
@@ -473,108 +473,108 @@ describe('Redis cache error handling', () => {
 // --- Stats endpoints ---
 const modelRef = require('mongoose').model();
 
-// describe('Stats: GET /api/urls/:code/stats/overview', () => {
-//   beforeEach(() => {
-//     modelRef.__setFail(false);
-//     modelRef.countDocuments.mockResolvedValue(10);
-//     modelRef.distinct.mockResolvedValue(['ip1', 'ip2']);
-//   });
+describe('Stats: GET /api/urls/:code/stats/overview', () => {
+  beforeEach(() => {
+    modelRef.__setFail(false);
+    modelRef.countDocuments.mockResolvedValue(10);
+    modelRef.distinct.mockResolvedValue(['ip1', 'ip2']);
+  });
 
-//   it('should return overview stats', async () => {
-//     const res = await request(app).get('/api/urls/test1/stats/overview');
-//     expect(res.statusCode).toBe(200);
-//     expect(res.body.success).toBe(true);
-//     expect(res.body.data.totalClicks).toBe(10);
-//     expect(res.body.data.uniqueIPs).toBe(2);
-//   });
+  it('should return overview stats', async () => {
+    const res = await request(app).get('/api/urls/test1/stats/overview');
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.totalClicks).toBe(10);
+    expect(res.body.data.uniqueIPs).toBe(2);
+  });
 
-//   it('should handle errors gracefully', async () => {
-//     modelRef.countDocuments.mockRejectedValueOnce(new Error('DB error'));
-//     const res = await request(app).get('/api/urls/testerr/stats/overview');
-//     expect(res.statusCode).toBe(500);
-//   });
-// });
+  it('should handle errors gracefully', async () => {
+    modelRef.countDocuments.mockRejectedValueOnce(new Error('DB error'));
+    const res = await request(app).get('/api/urls/testerr/stats/overview');
+    expect(res.statusCode).toBe(500);
+  });
+});
 
-// describe('Stats: GET /api/urls/:code/stats/timeseries', () => {
-//   it('should return timeseries data', async () => {
-//     modelRef.aggregate.mockResolvedValue([
-//       { _id: '2026-07-17T08:00:00Z', count: 5 },
-//     ]);
-//     const res = await request(app).get('/api/urls/test1/stats/timeseries?range=7d');
-//     expect(res.statusCode).toBe(200);
-//     expect(res.body.data).toHaveLength(1);
-//     expect(res.body.data[0].count).toBe(5);
-//   });
+describe('Stats: GET /api/urls/:code/stats/timeseries', () => {
+  it('should return timeseries data', async () => {
+    modelRef.aggregate.mockResolvedValue([
+      { _id: '2026-07-17T08:00:00Z', count: 5 },
+    ]);
+    const res = await request(app).get('/api/urls/test1/stats/timeseries?range=7d');
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toHaveLength(1);
+    expect(res.body.data[0].count).toBe(5);
+  });
 
-//   it('should default to 7d range', async () => {
-//     modelRef.aggregate.mockResolvedValue([]);
-//     const res = await request(app).get('/api/urls/test1/stats/timeseries');
-//     expect(res.statusCode).toBe(200);
-//   });
+  it('should default to 7d range', async () => {
+    modelRef.aggregate.mockResolvedValue([]);
+    const res = await request(app).get('/api/urls/test1/stats/timeseries');
+    expect(res.statusCode).toBe(200);
+  });
 
-//   it('should handle 30d range', async () => {
-//     modelRef.aggregate.mockResolvedValue([]);
-//     const res = await request(app).get('/api/urls/test1/stats/timeseries?range=30d');
-//     expect(res.statusCode).toBe(200);
-//   });
-// });
+  it('should handle 30d range', async () => {
+    modelRef.aggregate.mockResolvedValue([]);
+    const res = await request(app).get('/api/urls/test1/stats/timeseries?range=30d');
+    expect(res.statusCode).toBe(200);
+  });
+});
 
-// describe('Stats: GET /api/urls/:code/stats/geo', () => {
-//   it('should return geo data', async () => {
-//     modelRef.aggregate.mockResolvedValue([{ _id: 'US', count: 3 }]);
-//     const res = await request(app).get('/api/urls/test1/stats/geo');
-//     expect(res.statusCode).toBe(200);
-//     expect(res.body.data[0].country).toBe('US');
-//   });
-// });
+describe('Stats: GET /api/urls/:code/stats/geo', () => {
+  it('should return geo data', async () => {
+    modelRef.aggregate.mockResolvedValue([{ _id: 'US', count: 3 }]);
+    const res = await request(app).get('/api/urls/test1/stats/geo');
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data[0].country).toBe('US');
+  });
+});
 
-// describe('Stats: GET /api/urls/:code/stats/devices', () => {
-//   it('should return device breakdown', async () => {
-//     modelRef.aggregate
-//       .mockResolvedValueOnce([{ _id: 'desktop', count: 7 }])
-//       .mockResolvedValueOnce([{ _id: 'Chrome', count: 5 }])
-//       .mockResolvedValueOnce([{ _id: 'macOS', count: 8 }]);
-//     const res = await request(app).get('/api/urls/test1/stats/devices');
-//     expect(res.statusCode).toBe(200);
-//     expect(res.body.data.deviceTypes[0].type).toBe('desktop');
-//     expect(res.body.data.browsers[0].name).toBe('Chrome');
-//     expect(res.body.data.oss[0].name).toBe('macOS');
-//   });
+describe('Stats: GET /api/urls/:code/stats/devices', () => {
+  it('should return device breakdown', async () => {
+    modelRef.aggregate
+      .mockResolvedValueOnce([{ _id: 'desktop', count: 7 }])
+      .mockResolvedValueOnce([{ _id: 'Chrome', count: 5 }])
+      .mockResolvedValueOnce([{ _id: 'macOS', count: 8 }]);
+    const res = await request(app).get('/api/urls/test1/stats/devices');
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data.deviceTypes[0].type).toBe('desktop');
+    expect(res.body.data.browsers[0].name).toBe('Chrome');
+    expect(res.body.data.oss[0].name).toBe('macOS');
+  });
 
-//   it('should handle errors', async () => {
-//     modelRef.aggregate.mockRejectedValueOnce(new Error('DB error'));
-//     const res = await request(app).get('/api/urls/test1/stats/devices');
-//     expect(res.statusCode).toBe(500);
-//   });
-// });
+  it('should handle errors', async () => {
+    modelRef.aggregate.mockRejectedValueOnce(new Error('DB error'));
+    const res = await request(app).get('/api/urls/test1/stats/devices');
+    expect(res.statusCode).toBe(500);
+  });
+});
 
-// describe('Stats: GET /api/urls/:code/stats/referrers', () => {
-//   it('should return referrer data', async () => {
-//     modelRef.aggregate.mockResolvedValue([{ _id: 'https://google.com', count: 4 }]);
-//     const res = await request(app).get('/api/urls/test1/stats/referrers');
-//     expect(res.statusCode).toBe(200);
-//     expect(res.body.data[0].referrer).toBe('https://google.com');
-//   });
+describe('Stats: GET /api/urls/:code/stats/referrers', () => {
+  it('should return referrer data', async () => {
+    modelRef.aggregate.mockResolvedValue([{ _id: 'https://google.com', count: 4 }]);
+    const res = await request(app).get('/api/urls/test1/stats/referrers');
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data[0].referrer).toBe('https://google.com');
+  });
 
-//   it('should handle empty data', async () => {
-//     modelRef.aggregate.mockResolvedValue([]);
-//     const res = await request(app).get('/api/urls/test1/stats/referrers');
-//     expect(res.statusCode).toBe(200);
-//     expect(res.body.data).toHaveLength(0);
-//   });
-// });
+  it('should handle empty data', async () => {
+    modelRef.aggregate.mockResolvedValue([]);
+    const res = await request(app).get('/api/urls/test1/stats/referrers');
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data).toHaveLength(0);
+  });
+});
 
-// // --- Request ID middleware ---
-// describe('Request ID middleware', () => {
-//   it('should set X-Request-Id header on responses', async () => {
-//     const res = await request(app).get('/api/health');
-//     expect(res.headers['x-request-id']).toBeDefined();
-//   });
+// --- Request ID middleware ---
+describe('Request ID middleware', () => {
+  it('should set X-Request-Id header on responses', async () => {
+    const res = await request(app).get('/api/health');
+    expect(res.headers['x-request-id']).toBeDefined();
+  });
 
-//   it('should accept forwarded X-Request-Id', async () => {
-//     const res = await request(app)
-//       .get('/api/health')
-//       .set('X-Request-Id', 'my-custom-id-123');
-//     expect(res.headers['x-request-id']).toBe('my-custom-id-123');
-//   });
-// });
+  it('should accept forwarded X-Request-Id', async () => {
+    const res = await request(app)
+      .get('/api/health')
+      .set('X-Request-Id', 'my-custom-id-123');
+    expect(res.headers['x-request-id']).toBe('my-custom-id-123');
+  });
+});

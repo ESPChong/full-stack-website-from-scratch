@@ -9,6 +9,9 @@
     "lint": "eslint",
     "test": "jest"
   },
+  "jest": {
+    "rootDir": "."
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -54,7 +54,7 @@ services:
       dockerfile: backend/Dockerfile
 
     deploy:
-      replicas: 3
+      replicas: 2
       resources:
         limits:
           cpus: '0.5'
@@ -78,6 +78,43 @@ services:
       - MONGO_URI=mongodb://mongodb:27017/my_db
       - REDIS_URL=redis://redis:6379
       - PORT=5001
+
+
+# -------------------- Backend Worker (Click Analytics) --------------------
+  backend-worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+
+    container_name: local-click-worker
+
+    command: ["node", "workers/clickWorker.js"]
+
+    networks:
+      - backend_network
+
+    init: true
+
+    restart: unless-stopped
+
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/my_db
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=production
+
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
 
 # -------------------- MongoDB --------------------
   mongodb:
