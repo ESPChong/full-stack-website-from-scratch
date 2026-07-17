@@ -32,6 +32,8 @@ const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true); // Allow requests with no origin
 
+    if (process.env.NODE_ENV === 'development') return callback(null, true);
+
     if (allowedOrigins.split(',').includes(origin)) {
       return callback(null, true); // Origin is in the allow-list
     } else {
@@ -46,6 +48,9 @@ app.use(cors(corsOptions));
 
 
 // -------------------- ROUTES --------------------
+
+const urlsRouter = require('./routes/urls');
+const redirectRouter = require('./routes/redirect');
 
 // Create a simple status route
 app.get('/api/ready', (req, res) => {
@@ -64,6 +69,14 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// URL API routes (mounted at /api/urls)
+app.use('/api/urls', urlsRouter);
+
+// Short code redirect route (cache-first)
+// Mounted at root as THE LAST route — only catches paths that didn't match
+// any explicit route above (Express checks routes in registration order).
+app.use('/', redirectRouter);
 
 // 404 Catch All
 app.all('*path', (req, res) => {
