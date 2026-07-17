@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Semgrep Scan
-        run: semgrep scan --config=auto --error --no-surpress-errors
+        run: semgrep scan --config=auto --error
 
   # -- Security: Dependency Audit --
   audit:
